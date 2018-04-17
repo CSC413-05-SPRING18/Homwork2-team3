@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
 private void getButton(){
         OkHttpClient client = new OkHttpClient();
 
-        String url = "http://reqres.in/api/users?page=2";
+        String url = "http://www.ssaurel.com/tmp/todos";
+
+        //http://reqres.in/api/users?page=2//
 
         Request request = new Request.Builder()
                 .url(url)
