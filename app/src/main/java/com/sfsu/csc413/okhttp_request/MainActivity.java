@@ -1,12 +1,17 @@
 package com.sfsu.csc413.okhttp_request;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.TableRow;
+
+import android.text.util.Linkify;
 
 import java.io.IOException;
 
@@ -23,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView Result;
     private Button button;
     private OkHttpClient client;
+
+
 
 
     @Override
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private void getButton(){
         OkHttpClient client = new OkHttpClient();
 
-        String url = "https://api.stackexchange.com/2.2/posts?page=1&order=desc&sort=votes&site=stackoverflow";
+        String url = "https://api.stackexchange.com/2.2/posts?page=1&pagesize=100&order=desc&sort=votes&site=stackoverflow";
 
 
 
@@ -108,6 +115,37 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
+                            //gets table layout
+                            TableLayout table = (TableLayout)findViewById(R.id.results);
+                            TableRow.LayoutParams params1 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT, 1.0f);
+                            TableRow.LayoutParams params2 = new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT,TableRow.LayoutParams.WRAP_CONTENT);
+
+                            //Displays the headers
+                            TableRow headers = new TableRow(getApplicationContext());
+                            TextView header1 = new TextView(getApplicationContext());
+                            TextView header2 = new TextView(getApplicationContext());
+                            TextView header3 = new TextView(getApplicationContext());
+
+                            header1.setText("Username");
+                            header2.setText("Score");
+                            header3.setText("Link");
+
+                            header1.setPadding(10,10,10,10);
+                            header2.setPadding(10,10,10,10);
+                            header3.setPadding(10,10,10,10);
+
+                            header1.setLayoutParams(params2);
+                            header2.setLayoutParams(params2);
+                            header3.setLayoutParams(params2);
+
+                            headers.addView(header1);
+                            headers.addView(header2);
+                            headers.addView(header3);
+
+                            headers.setLayoutParams(params2);
+                            table.addView(headers);
+
+
                             try {
                                 JSONObject json = new JSONObject(myResponse);
                                 JSONArray posts = json.getJSONArray("items");
@@ -128,7 +166,36 @@ public class MainActivity extends AppCompatActivity {
                                     String link = obj.getString("link");
 
                                     text += username + " | " + score +" | " + link+ "\n";
-                                    Result.setText(text);
+                                    //Result.setText(text);
+
+                                    TableRow row = new TableRow(getApplicationContext());
+
+                                    TextView col1 = new TextView(getApplicationContext());
+                                    TextView col2 = new TextView(getApplicationContext());
+                                    TextView col3 = new TextView(getApplicationContext());
+
+                                    col1.setText(username);
+                                    col2.setText(score);
+                                    col3.setText(link);
+
+                                    col1.setPadding(10,10,10,10);
+                                    col1.setTextColor(Color.BLUE);
+                                    col2.setPadding(10,10,10,10);
+                                    col3.setPadding(10,10,10,10);
+                                    col3.setTextColor(Color.GRAY);
+
+                                    col1.setLayoutParams(params2);
+                                    col2.setLayoutParams(params2);
+                                    col3.setLayoutParams(params2);
+
+                                    row.addView(col1);
+                                    row.addView(col2);
+                                    row.addView(col3);
+
+                                    Linkify.addLinks(col3, Linkify.WEB_URLS);
+
+                                    row.setLayoutParams(params2);
+                                    table.addView(row);
                                 }
 
 
@@ -136,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
                                 //Result.setText(Result.getText() + "\n" +ex.toString());
                             }
                         }
+
+
+
+
+
                     });
                 }
             }
